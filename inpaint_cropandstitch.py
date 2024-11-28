@@ -1,4 +1,4 @@
-import comfy.utils
+import totoro.utils
 import math
 import nodes
 import numpy as np
@@ -17,8 +17,8 @@ def rescale(samples, width, height, algorithm: str):
 
 class InpaintCrop:
     """
-    ComfyUI-InpaintCropAndStitch
-    https://github.com/lquesada/ComfyUI-InpaintCropAndStitch
+    TotoroUI-InpaintCropAndStitch
+    https://github.com/lquesada/TotoroUI-InpaintCropAndStitch
 
     This node crop before sampling and stitch after sampling for fast, efficient inpainting without altering unmasked areas.
     Context area can be specified via expand pixels and expand factor or via a separate (optional) mask.
@@ -198,7 +198,7 @@ class InpaintCrop:
 
         return result_stitch, result_image, result_mask
        
-    # Parts of this function are from KJNodes: https://github.com/kijai/ComfyUI-KJNodes
+    # Parts of this function are from KJNodes: https://github.com/kijai/TotoroUI-KJNodes
     def inpaint_crop_single_image(self, image, mask, context_expand_pixels, context_expand_factor, fill_mask_holes, blur_mask_pixels, invert_mask, blend_pixels, mode, rescale_algorithm, force_width, force_height, rescale_factor, padding, min_width, min_height, max_width, max_height, optional_context_mask=None):
         #Validate or initialize mask
         if mask.shape[1] != image.shape[1] or mask.shape[2] != image.shape[2]:
@@ -485,8 +485,8 @@ class InpaintCrop:
 
 class InpaintStitch:
     """
-    ComfyUI-InpaintCropAndStitch
-    https://github.com/lquesada/ComfyUI-InpaintCropAndStitch
+    TotoroUI-InpaintCropAndStitch
+    https://github.com/lquesada/TotoroUI-InpaintCropAndStitch
 
     This node stitches the inpainted image without altering unmasked areas.
     """
@@ -507,13 +507,13 @@ class InpaintStitch:
 
     FUNCTION = "inpaint_stitch"
 
-    # This function is from comfy_extras: https://github.com/comfyanonymous/ComfyUI
+    # This function is from totoro_extras: https://github.com/totoroanonymous/TotoroUI
     def composite(self, destination, source, x, y, mask=None, multiplier=8, resize_source=False):
         source = source.to(destination.device)
         if resize_source:
             source = torch.nn.functional.interpolate(source, size=(destination.shape[2], destination.shape[3]), mode="bilinear")
 
-        source = comfy.utils.repeat_to_batch_size(source, destination.shape[0])
+        source = totoro.utils.repeat_to_batch_size(source, destination.shape[0])
 
         x = max(-source.shape[3] * multiplier, min(x, destination.shape[3] * multiplier))
         y = max(-source.shape[2] * multiplier, min(y, destination.shape[2] * multiplier))
@@ -526,7 +526,7 @@ class InpaintStitch:
         else:
             mask = mask.to(destination.device, copy=True)
             mask = torch.nn.functional.interpolate(mask.reshape((-1, 1, mask.shape[-2], mask.shape[-1])), size=(source.shape[2], source.shape[3]), mode="bilinear")
-            mask = comfy.utils.repeat_to_batch_size(mask, source.shape[0])
+            mask = totoro.utils.repeat_to_batch_size(mask, source.shape[0])
 
         # calculate the bounds of the source that will be overlapping the destination
         # this prevents the source trying to overwrite latent pixels that are out of bounds
@@ -606,8 +606,8 @@ class InpaintStitch:
 
 class InpaintExtendOutpaint:
     """
-    ComfyUI-InpaintCropAndStitch
-    https://github.com/lquesada/ComfyUI-InpaintCropAndStitch
+    TotoroUI-InpaintCropAndStitch
+    https://github.com/lquesada/TotoroUI-InpaintCropAndStitch
 
     This node extends an image for inpainting with Inpaint Crop and Stitch.
     """
@@ -761,8 +761,8 @@ class InpaintExtendOutpaint:
 
 class InpaintResize:
     """
-    ComfyUI-InpaintCropAndStitch
-    https://github.com/lquesada/ComfyUI-InpaintCropAndStitch
+    TotoroUI-InpaintCropAndStitch
+    https://github.com/lquesada/TotoroUI-InpaintCropAndStitch
 
     This node resizes an image before inpainting with Inpaint Crop and Stitch.
     """

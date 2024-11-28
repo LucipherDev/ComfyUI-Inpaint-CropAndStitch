@@ -3,8 +3,6 @@ from .inpaint_cropandstitch import InpaintStitch
 from .inpaint_cropandstitch import InpaintExtendOutpaint
 from .inpaint_cropandstitch import InpaintResize
 
-WEB_DIRECTORY = "js"
-
 NODE_CLASS_MAPPINGS = {
     "InpaintCrop": InpaintCrop,
     "InpaintStitch": InpaintStitch,
